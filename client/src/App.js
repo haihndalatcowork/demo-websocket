@@ -7,7 +7,13 @@ const socket = socketIOClient('http://localhost:5000');
 
 class App extends React.Component {
     state = {
-        clicked: false
+        dataPoints: [
+            {y: 0, label: "Direct"},
+            {y: 0, label: "Organic Search"},
+            {y: 0, label: "Paid Search"},
+            {y: 0, label: "Referral"},
+            {y: 0, label: "Social"}
+        ]
     };
 
     componentWillMount() {
@@ -29,6 +35,7 @@ class App extends React.Component {
 
     render() {
         const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+        const dataPoints = this.state.dataPoints;
         const options = {
             exportEnabled: true,
             animationEnabled: true,
@@ -43,24 +50,20 @@ class App extends React.Component {
                 legendText: "{label}",
                 indexLabelFontSize: 16,
                 indexLabel: "{label} - {y}%",
-                dataPoints: [
-                    { y: 18, label: "Direct" },
-                    { y: 49, label: "Organic Search" },
-                    { y: 9, label: "Paid Search" },
-                    { y: 5, label: "Referral" },
-                    { y: 19, label: "Social" }
-                ]
+                dataPoints: dataPoints
             }]
         };
         return (
             <div className="App">
                 <header className="App-header">
-                    <CanvasJSChart options = {options}
+                    <CanvasJSChart options={options}
                         /* onRef={ref => this.chart = ref} */
                     />
-                    <button onClick={this.onClickHandle}>
-                        Join the conversation
-                    </button>
+                    {
+                        dataPoints.map((item, index) => {
+                            return <button key={index} onClick={this.onClickHandle}>{item.label}</button>
+                        })
+                    }
                 </header>
             </div>
         );
