@@ -1,7 +1,7 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const socketIO = require('socket.io')(http);
-const mysql = require('mysql');
+const db = require('./configs/db');
 
 socketIO.on("connection", socket => {
     console.log("connected");
