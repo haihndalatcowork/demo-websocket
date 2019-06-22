@@ -1,5 +1,6 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
+import axios from 'axios';
 import CanvasJSReact from "./canvasjs/canvasjs.react";
 import './App.css';
 
@@ -7,30 +8,54 @@ const socket = socketIOClient('http://localhost:5000');
 
 class App extends React.Component {
     state = {
-        dataPoints: [
-            {y: 0, label: "Direct"},
-            {y: 0, label: "Organic Search"},
-            {y: 0, label: "Paid Search"},
-            {y: 0, label: "Referral"},
-            {y: 0, label: "Social"}
-        ]
+        dataPoints: []
     };
 
     componentWillMount() {
+        axios.get('http://localhost:5000/votes')
+            .then(res => {
+                let dataPoints = [];
+                let total = 0;
+                res.data.map(item => {
+                    total += item.count
+                });
+                res.data.map(item => {
+                    dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id})
+                });
+                this.setState({
+                    dataPoints: dataPoints
+                })
+            })
+            .catch(err => console.log(err));
+
         socket.on('connect', () => {
 
         });
         socket.on('send to client', (data) => {
-            alert(data.success)
-        })
+                if (data.success) {
+                    axios.get('http://localhost:5000/votes')
+                        .then(res => {
+                            let dataPoints = [];
+                            let total = 0;
+                            res.data.map(item => {
+                                total += item.count
+                            });
+                            res.data.map(item => {
+                                dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id})
+                            });
+                            this.setState({
+                                dataPoints: dataPoints
+                            })
+                        })
+                        .catch(err => console.log(err));
+                }
+            }
+        )
     }
 
-    onClickHandle = () => {
+    onClickHandle = (id) => {
         const socket = socketIOClient('http://localhost:5000');
-        socket.emit('join the conversation', {userId: 123});
-        this.setState(prevState => {
-            return {clicked: !prevState.clicked}
-        })
+        socket.emit('VOTED', id);
     };
 
     render() {
@@ -40,7 +65,7 @@ class App extends React.Component {
             exportEnabled: true,
             animationEnabled: true,
             title: {
-                text: "Website Traffic Sources"
+                text: "Who is the best?"
             },
             data: [{
                 type: "pie",
@@ -60,8 +85,9 @@ class App extends React.Component {
                         /* onRef={ref => this.chart = ref} */
                     />
                     {
-                        dataPoints.map((item, index) => {
-                            return <button key={index} onClick={this.onClickHandle}>{item.label}</button>
+                        dataPoints.map((item) => {
+                            return <button key={item.id}
+                                           onClick={() => this.onClickHandle(item.id)}>{item.label}</button>
                         })
                     }
                 </header>
