@@ -1,9 +1,8 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const socketIO = require('socket.io')(http);
-const db = require('./configs/db');
 const routes = require('./api/routes');
-const tableName = 'votes'
+const sockets = require('./api/sockets');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -13,18 +12,8 @@ app.use(function (req, res, next) {
 
 routes(app);
 
-socketIO.on("connection", socket => {
-    socket.on('VOTED', (optionId) => {
-        let sql = `UPDATE ${tableName} SET count = count + 1 WHERE id=${optionId}`;
-        db.query(sql, (err) => {
-            if (err) throw err;
-            socketIO.sockets.emit("send to client", {success: true});
-        });
-    });
-    socket.on("disconnect", () => {
+sockets(socketIO);
 
-    })
-});
 
 const port = process.env.PORT || 5000;
 

@@ -1,5 +1,5 @@
 const db = require('../../configs/db');
-const tableName = 'votes'
+const tableName = 'votes';
 let voteController = {
     getAllVote:(req,res)=>{
         let sqlString = `SELECT * FROM ${tableName}`;
@@ -8,5 +8,5 @@ let voteController = {
             res.json(response);
         })
     }
-}
-module.exports = voteController
+};
+module.exports = voteController;

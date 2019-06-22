@@ -1,5 +1,5 @@
 const voteController = require('./controllers/vote.controller');
-module.exports = app =>{
+module.exports = app => {
     app.route('/votes')
-    .get(voteController.getAllVote)
-}
+        .get(voteController.getAllVote)
+};
