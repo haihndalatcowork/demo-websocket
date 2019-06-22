@@ -13,17 +13,6 @@ socketIO.on("connection", socket => {
         console.log("disconnected");
     })
 });
-const con = mysql.createConnection({
-    host: "remotemysql.com",
-    user: "hc0NRaldjW",
-    password: "AAlJkn6mFf",
-    database: "hc0NRaldjW"
-  });
-  
-  con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
-  });
 
 const port = process.env.PORT || 5000;
 
