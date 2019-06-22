@@ -1,7 +1,6 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
 import CanvasJSReact from "./canvasjs/canvasjs.react";
-import logo from './logo.svg';
 import './App.css';
 
 const socket = socketIOClient('http://localhost:5000');
