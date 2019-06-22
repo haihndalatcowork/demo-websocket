@@ -4,6 +4,10 @@ const socketIO = require('socket.io')(http);
 
 socketIO.on("connection", socket => {
     console.log("connected");
+    socket.on('join the conversation', (userId) => {
+        console.log(userId);
+        socketIO.sockets.emit('send to client', {success: true})
+    });
     socket.on("disconnect", () => {
         console.log("disconnected");
     })
