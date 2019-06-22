@@ -2,8 +2,9 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const socketIO = require('socket.io')(http);
 const db = require('./configs/db');
-
-const tableName = 'votes';
+const routes = require('./api/routes');
+const tableName = 'votes'
+routes(app);
 socketIO.on("connection", socket => {
     socket.on('VOTED', (optionId) => {
         let sql = `UPDATE ${tableName} SET count = count + 1 WHERE id=${optionId}`;
