@@ -1,5 +1,6 @@
 const app = require('express')();
-const socketIO = require('socket.io');
+const http = require('http').createServer(app);
+const socketIO = require('socket.io')(http);
 
 socketIO.on("connection", socket => {
     console.log("connected");
@@ -10,5 +11,4 @@ socketIO.on("connection", socket => {
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server listening on port ${port}`));
-// cho Hai
+http.listen(port, () => console.log(`Server listening on port ${port}`));
