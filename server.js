@@ -26,14 +26,6 @@ socketIO.on("connection", socket => {
     })
 });
 
-
-app.get('/votes', (req, res) => {
-    let sqlString = `SELECT * FROM ${tableName}`;
-    db.query(sqlString, (err, response) => {
-        if (err) throw err;
-        res.json(response);
-    })
-});
 const port = process.env.PORT || 5000;
 
 http.listen(port, () => console.log(`Server listening on port ${port}`));
