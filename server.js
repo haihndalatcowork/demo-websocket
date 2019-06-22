@@ -13,7 +13,7 @@ socketIO.on("connection", socket => {
         console.log("disconnected");
     })
 });
-var con = mysql.createConnection({
+const con = mysql.createConnection({
     host: "remotemysql.com",
     user: "hc0NRaldjW",
     password: "AAlJkn6mFf",
