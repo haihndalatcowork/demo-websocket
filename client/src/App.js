@@ -3,62 +3,59 @@ import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 import CanvasJSReact from "./canvasjs/canvasjs.react";
 import './App.css';
+import {connect} from "react-redux"
+import {getVotes, voting} from "./actions/voteAction";
+import {GET_VOTES, VOTE_COMPLETE, VOTE_REQUEST} from "./actions/types";
 
 const socket = socketIOClient('http://localhost:5000');
 
 class App extends React.Component {
     state = {
-        dataPoints: []
+        dataPoints: [],
+        label: "",
+        isVoting: false,
+        voted: false
     };
 
-    componentWillMount() {
-        axios.get('http://localhost:5000/votes')
-            .then(res => {
-                let dataPoints = [];
-                let total = 0;
-                res.data.map(item => {
-                    total += item.count
-                });
-                res.data.map(item => {
-                    dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id})
-                });
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log(nextProps);
+        switch (nextProps.type) {
+            case GET_VOTES:
                 this.setState({
-                    dataPoints: dataPoints
-                })
-            })
-            .catch(err => console.log(err));
+                    dataPoints: nextProps.result
+                });
+                break;
+            case VOTE_REQUEST:
+            case VOTE_COMPLETE:
+                this.setState({
+                    isVoting: nextProps.isFetching,
+                    voted: true
+                });
+        }
+    }
 
+    componentWillMount() {
+        this.props.getVotes();
         socket.on('connect', () => {
-
+            console.log("Connected!")
         });
-        socket.on('send to client', (data) => {
+        socket.on('UPDATED_VOTE', (data) => {
                 if (data.success) {
-                    axios.get('http://localhost:5000/votes')
-                        .then(res => {
-                            let dataPoints = [];
-                            let total = 0;
-                            res.data.map(item => {
-                                total += item.count
-                            });
-                            res.data.map(item => {
-                                dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id})
-                            });
-                            this.setState({
-                                dataPoints: dataPoints
-                            })
-                        })
-                        .catch(err => console.log(err));
+                    this.props.getVotes();
                 }
             }
         )
     }
 
-    onClickHandle = (id) => {
+    onClickHandle = (item) => {
+        this.props.voting();
+        this.setState({label: item.label});
         const socket = socketIOClient('http://localhost:5000');
-        socket.emit('VOTED', id);
+        socket.emit('VOTED', item.id);
     };
 
     render() {
+        console.log(this.state.label, this.state.voted)
         const CanvasJSChart = CanvasJSReact.CanvasJSChart;
         const dataPoints = this.state.dataPoints;
         const options = {
@@ -85,10 +82,26 @@ class App extends React.Component {
                         /* onRef={ref => this.chart = ref} */
                     />
                     {
-                        dataPoints.map((item) => {
-                            return <button key={item.id}
-                                           onClick={() => this.onClickHandle(item.id)}>{item.label}</button>
-                        })
+                        this.state.voted ? <div style={{color: "red"}}>You voted for {this.state.label} </div> :
+                            <div>
+                                {
+                                    dataPoints.map((item) => {
+                                        return (
+                                            <button
+                                                style={{
+                                                    padding: "1em",
+                                                    backgroundColor: "#b5d6ff",
+                                                    borderRadius: "5px",
+                                                    margin: "5px"
+                                                }}
+                                                key={item.id}
+                                                onClick={() => this.onClickHandle(item)}>
+                                                {item.label}
+                                            </button>
+                                        )
+                                    })
+                                }
+                            </div>
                     }
                 </header>
             </div>
@@ -96,4 +109,12 @@ class App extends React.Component {
     }
 }
 
-export default App;
+const mapStateToProps = state => ({
+    ...state.votes
+});
+const mapDispatchToProps = dispatch => ({
+    getVotes: () => dispatch(getVotes()),
+    voting: () => dispatch(voting())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
