@@ -4,7 +4,15 @@ const socketIO = require('socket.io')(http);
 const db = require('./configs/db');
 const routes = require('./api/routes');
 const tableName = 'votes'
+
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 routes(app);
+
 socketIO.on("connection", socket => {
     socket.on('VOTED', (optionId) => {
         let sql = `UPDATE ${tableName} SET count = count + 1 WHERE id=${optionId}`;
@@ -17,11 +25,7 @@ socketIO.on("connection", socket => {
 
     })
 });
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+
 
 app.get('/votes', (req, res) => {
     let sqlString = `SELECT * FROM ${tableName}`;
