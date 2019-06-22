@@ -5,13 +5,8 @@ export const getVotes = () => dispatch => {
     axios.get('http://localhost:5000/votes')
         .then(res => {
             let dataPoints = [];
-            let total = 0;
-            res.data.map(item => {
-                total += item.count
-            });
-            res.data.map(item => {
-                dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id})
-            });
+            let total = res.data.reduce((s, item) => s + item.count, 0);
+            res.data.map(item => dataPoints.push({y: (item.count / total) * 100, label: item.name, id: item.id}));
             dispatch({
                 type: GET_VOTES,
                 payload: dataPoints

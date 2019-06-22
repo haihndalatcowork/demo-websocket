@@ -1,6 +1,5 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
-import axios from 'axios';
 import CanvasJSReact from "./canvasjs/canvasjs.react";
 import './App.css';
 import {connect} from "react-redux"
@@ -18,7 +17,6 @@ class App extends React.Component {
     };
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log(nextProps);
         switch (nextProps.type) {
             case GET_VOTES:
                 this.setState({
@@ -31,6 +29,9 @@ class App extends React.Component {
                     isVoting: nextProps.isFetching,
                     voted: true
                 });
+                break;
+            default:
+                return;
         }
     }
 
@@ -55,7 +56,6 @@ class App extends React.Component {
     };
 
     render() {
-        console.log(this.state.label, this.state.voted)
         const CanvasJSChart = CanvasJSReact.CanvasJSChart;
         const dataPoints = this.state.dataPoints;
         const options = {
@@ -71,7 +71,7 @@ class App extends React.Component {
                 showInLegend: "true",
                 legendText: "{label}",
                 indexLabelFontSize: 16,
-                indexLabel: "{label} - {y}%",
+                indexLabel: "{label} ({y}%)",
                 dataPoints: dataPoints
             }]
         };
