@@ -1,10 +1,8 @@
 # demo-websocket
 Websocket (using NodeJS and Socket.io)
 # Biểu đồ bình chọn thời gian thực (realtime)
-```
-Back-end: [Express](https://www.npmjs.com/package/express), [MySQL](https://www.npmjs.com/package/mysql), [Socket.io](https://socket.io/)
-Font-end: [React.js](https://reactjs.org/), dùng [canvanjs](https://canvasjs.com/) để vẽ biểu đồ
-```
+* Back-end: [Express](https://www.npmjs.com/package/express), [MySQL](https://www.npmjs.com/package/mysql), [Socket.io](https://socket.io/)
+* Font-end: [React.js](https://reactjs.org/), dùng [canvanjs](https://canvasjs.com/) để vẽ biểu đồ
 
 Demo được thực hiện bởi [Hải](https://github.com/haihndalatcowork) và [Lâm](https://github.com/lamthndalatcowork) đến từ [Dalatcowork](https://dalatcowork.com/) 
 
