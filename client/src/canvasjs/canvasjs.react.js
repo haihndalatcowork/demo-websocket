@@ -20,7 +20,7 @@ class CanvasJSChart extends React.Component {
 			this.props.onRef(this.chart);
 	}	
     shouldComponentUpdate(nextProps, nextState){
-		//Check if Chart-options has changed and determine if component has to be updated
+		//Check if Chart-options has changed and determine if components has to be updated
         return !(nextProps.options === this.options);
     }
 	componentDidUpdate() {

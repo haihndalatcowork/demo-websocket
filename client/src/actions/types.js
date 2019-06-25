@@ -1,3 +1,10 @@
 export const GET_VOTES = "GET_VOTES";
+
 export const VOTE_REQUEST = "VOTE_REQUEST";
 export const VOTE_COMPLETE = "VOTE_COMPLETE";
+
+export const REGISTER_REQUEST = "REGISTER_REQUEST";
+export const REGISTER_COMPLETE = "REGISTER_COMPLETE";
+
+export const LOGIN_REQUEST = "LOGIN_REQUEST";
+export const LOGIN_COMPLETE = "LOGIN_COMPLETE";
